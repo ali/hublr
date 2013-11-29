@@ -14,6 +14,12 @@
     ],
   "permissions": [
     "tabs", "https://github.com/", "http://github.com/"
-    ]
+    ],
+  "content_scripts": [
+    {
+      "js": ["gthublr.js"],
+      "css": ["gthublr.css"]
+    }
+  ]
 }
 
