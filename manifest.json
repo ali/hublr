@@ -1,0 +1,19 @@
+{
+  "manifest_version": 2,
+  "name": "gthublr",
+  "description": "A Chrome extension for nerds",
+  "version": "0.0.1",
+  "author": [
+    {
+      "name": "Alisha Ukani"
+    },
+    {
+      "name": "Ali Ukani",
+      "email": "ali.ukani@gmail.com"
+    }
+    ],
+  "permissions": [
+    "tabs", "https://github.com/", "http://github.com/"
+    ]
+}
+
