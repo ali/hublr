@@ -1,10 +1,17 @@
-COFFEE:= $(wildcard *.coffee)
+COFFEE := $(shell find . -name *.coffee)
+JS := $(COFFEE:coffee=js)
 
 all: lint compile
 
-lint: $(COFFEE)
+lint:
 	coffeelint $(COFFEE)
 
-compile: $(COFFEE)
-	coffee -c $(COFFEE)
+compile: $(JS)
 
+clean:
+	rm $(JS)
+
+%.js: %.coffee
+	coffee -c $<
+
+.PHONY : all lint compile clean
