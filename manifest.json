@@ -17,6 +17,10 @@
     ],
   "content_scripts": [
     {
+      "matches": [
+        "https://github.com/",
+        "http://github.com/"
+        ],
       "js": ["gthublr.js"],
       "css": ["gthublr.css"]
     }
