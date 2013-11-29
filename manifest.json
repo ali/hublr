@@ -21,7 +21,10 @@
         "https://github.com/",
         "http://github.com/"
         ],
-      "js": ["gthublr.js"],
+      "js": [
+        "vendor/jquery-1.10.2.min.js",
+        "gthublr.js"
+        ],
       "css": ["gthublr.css"]
     }
   ]
