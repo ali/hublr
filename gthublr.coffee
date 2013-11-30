@@ -1,12 +1,18 @@
-stars = $('.alert.watch_started .simple')
-API_ROOT = 'https://api.github.com/repos/'
+API_ROOT = '//api.github.com/repos/'
 
-for repo in stars
+stars = $('.alert.watch_started .simple')
+creates = $('.alert.create .simple')
+repos = $.merge stars, creates
+
+for repo in repos
   do (repo) ->
-    repoName = $(repo).find('.title a:nth-child(3)').text()
-    $.ajax(
-      url: API_ROOT + repoName
-    ).done (response) ->
-      $description = $("<div class='message gthublr-description'>")
-      $description.text response.description
-      $(repo).append $description
+    repoURL = $(repo).find('.title a:nth-child(3)').attr 'href'
+    slug = repoURL.match(/.*\/(\S+\/\S+?)\/?$/)[1]
+
+    $.ajax({
+      url: API_ROOT + slug
+    }).done (response) ->
+      if response.description
+        $description = $("<div class='message gthublr-description'>")
+        $description.text response.description
+        $(repo).append $description
