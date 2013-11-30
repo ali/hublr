@@ -1,4 +1,4 @@
-COFFEE := $(shell find . -name *.coffee)
+COFFEE := $(wildcard *.coffee)
 JS := $(COFFEE:coffee=js)
 
 all: lint compile
