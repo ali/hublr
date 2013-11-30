@@ -2,29 +2,39 @@ class Cache
   API_ROOT = '//api.github.com/repos/'
 
   constructor: ->
-    @_storage = {}
+    @_storage = chrome.storage.local
 
-  set: (slug, data, callback) =>
-    console.log "Setting #{slug}"
-    @_storage[slug] = data
-    callback data  if callback?
+  set: (slug, data, callback) ->
+    # This is hacky. Coffeescript made me do it.
+    items = {}
+    items[slug] = data
+    @_storage.set items, ->
+      do (slug, data, callback) ->
+        console.log "Cached #{slug}"
+        callback data if callback?
 
   _fetch: (slug, callback) =>
     $.ajax({
       url: API_ROOT + slug
     }).done((data) =>
       console.log "Fetched #{slug}"
+      data.hblr = Date.now()
       @set slug, data, callback
     ).fail =>
       console.error "Failed to fetch #{slug}"
-      @set slug, undefined, callback
+      @set slug, {}, callback
 
   get: (slug, callback) =>
-    if @_storage[slug]?
-      console.log "Pulled #{slug} from the cache"
-      callback @_storage[slug]
-    else
-      @_fetch slug, callback
+    @_storage.get slug, (items) =>
+      data = items[slug]
+      if data?.hblr # Check if the data was actually set
+        console.log "Pulled #{slug} from the cache"
+        callback data
+      else
+        @_fetch slug, callback
+
+  clear: ->
+    @_storage.clear()
 
 cache = new Cache()
 
