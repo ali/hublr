@@ -22,7 +22,7 @@
   "content_scripts": [
     {
       "matches": [
-        "*://github.com/*"
+        "*://github.com/"
         ],
       "js": [
         "vendor/jquery-1.10.2.min.js",
