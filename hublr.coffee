@@ -33,7 +33,7 @@ class Cache
         @_fetch slug, callback
 
   sweep: ->
-    @_storage.get null, (items) ->
+    @_storage.get null, (items) =>
       console.log 'Sweeping the cache...'
       @_storage.remove (slug for slug, data of items when not data.description)
 
@@ -70,16 +70,22 @@ hublrfy = ($repo) ->
   $repo
 
 findRepos = ->
-  $('.alert .simple:not(.hublr)')
+  types = ['fork', 'create', 'watch_started']
+  selectors = (".alert.simple.#{type} .simple:not(.hublr)" for type in types)
+  $(selectors.join ', ')
 
 cache = new Cache()
 
-bangarang = ->
+bangarang = (retry=0) ->
   repos = findRepos()
 
   if repos.length is 0
-    console.log 'Rebanging...'
-    setTimeout bangarang, 200
+    console.err "Couldn't find any repos. Rebanging..."
+    if retry < 5
+      setTimeout bangarang, 200, retry + 1
+    else
+      setTimeout bangarang, 1000, retry/2
+
     return
 
   for repo in findRepos()
