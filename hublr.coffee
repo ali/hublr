@@ -3,6 +3,7 @@ class Cache
 
   constructor: ->
     @_storage = chrome.storage.local
+    @fails = {}
     @sweep()
 
   set: (slug, data, callback) ->
@@ -14,14 +15,17 @@ class Cache
         callback data if callback?
 
   _fetch: (slug, callback) =>
+    return if @fails[slug]
+
     $.ajax({
       url: API_ROOT + slug
     }).done((data) =>
       console.log "Fetched #{ slug }"
       data.hublr = Date.now()
       @set slug, data, callback
-    ).fail (err) ->
+    ).fail (err) =>
       console.error "Failed to fetch #{ slug }"
+      @fails[slug] = Date.now()
 
   get: (slug, callback) =>
     @_storage.get slug, (items) =>
@@ -35,7 +39,8 @@ class Cache
   sweep: ->
     @_storage.get null, (items) =>
       console.log 'Sweeping the cache...'
-      @_storage.remove (slug for slug, data of items when not data.description)
+      slugs = (slug for slug, data of items when Object.keys(data).length < 5)
+      @_storage.remove slugs
 
 addDescription = ($repo, description) ->
   $description = $("<div class='message hublr-description'>)")
@@ -80,7 +85,7 @@ bangarang = (retry=0) ->
   repos = findRepos()
 
   if repos.length is 0
-    console.err "Couldn't find any repos. Rebanging..."
+    console.error "Couldn't find any repos. Rebanging..."
     if retry < 5
       setTimeout bangarang, 200, retry + 1
     else
