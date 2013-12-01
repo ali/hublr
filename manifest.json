@@ -1,7 +1,8 @@
 {
   "manifest_version": 2,
-  "name": "gthublr",
+  "name": "hublr",
   "description": "A Chrome extension for nerds",
+  "homepage_url": "https://github.com/ali/hublr"
   "version": "0.0.1",
   "author": [
     {
@@ -25,9 +26,9 @@
         ],
       "js": [
         "vendor/jquery-1.10.2.min.js",
-        "gthublr.js"
+        "hublr.js"
         ],
-      "css": ["gthublr.css"]
+      "css": ["hublr.css"]
     }
   ]
 }
