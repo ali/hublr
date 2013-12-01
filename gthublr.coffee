@@ -18,7 +18,7 @@ class Cache
       url: API_ROOT + slug
     }).done((data) =>
       console.log "Fetched #{slug}"
-      data.hblr = Date.now()
+      data.hublr = Date.now()
       @set slug, data, callback
     ).fail =>
       console.error "Failed to fetch #{slug}"
@@ -27,7 +27,7 @@ class Cache
   get: (slug, callback) =>
     @_storage.get slug, (items) =>
       data = items[slug]
-      if data?.hblr # Check if the data was actually set
+      if data?.hublr # Check if the data was actually set
         console.log "Pulled #{slug} from the cache"
         callback data
       else
@@ -42,14 +42,38 @@ stars = $('.alert.watch_started .simple')
 creates = $('.alert.create .simple')
 repos = $.merge stars, creates
 
+addDescription = ($repo, description) ->
+  $description = $("<div class='message hublr-description'>
+    <p>#{description}</p>
+  </div>")
+  $repo.append $description
+  $repo
+
+addMeta = ($repo, stars, watchers, forks) ->
+  $meta = $("<div class='hublr-meta'>
+    <span>#{watchers}
+    <span class='octicon octicon-eye-watch'></span>
+    </span>
+    <span>#{stars}
+    <span class='octicon octicon-star'></span>
+    </span>
+    <span>#{forks}
+    <span class='octicon octicon-git-branch-create'></span>
+    </span>
+    </div>")
+
+  $repo.prepend $meta
+
+
 for repo in repos
-  do (repo) ->
-    repoURL = $(repo).find('.title a:nth-child(3)').attr 'href'
+  $repo = $(repo)
+  do ($repo) ->
+    repoURL = $repo.find('.title a:nth-child(3)').attr 'href'
     slug = repoURL.match(/.*\/(\S+\/\S+?)\/?$/)[1]
 
     cache.get slug, (data) ->
-      if data?.description
-        $description = $("<div class='message gthublr-description'>")
-        $description.text data.description
-        $(repo).append $description
+      if data?.hublr
+        if data.description
+          addDescription $repo, data.description
 
+        addMeta $repo, data.stargazers_count, data.watchers_count, data.forks

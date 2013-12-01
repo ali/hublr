@@ -1,3 +1,17 @@
-.news .message.gthublr-description {
+.news .message.hublr-description {
   display: block;
+}
+
+.news .hublr-meta {
+  float: right;
+  color: #bbb;
+  font-size: 12px;
+}
+
+.news .hublr-meta span {
+  font-size: 100%;
+}
+
+.news .hublr-meta .octicon {
+  margin-left: 2px;
 }
