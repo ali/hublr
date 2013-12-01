@@ -42,64 +42,67 @@ class Cache
       slugs = (slug for slug, data of items when Object.keys(data).length < 5)
       @_storage.remove slugs
 
-addDescription = ($repo, description) ->
-  $description = $("<div class='message hublr-description'>)")
-  $description.append $("<p>#{ description }</p>")
-  $repo.append $description
-  $repo
+class Hublr
+  constructor: ->
+    @cache = new Cache()
+    @cache.sweep()
 
-addMeta = ($repo, watchers, stars, forks) ->
-  makeSpan = (n, icon) ->
-    $("<span> #{ n.toLocaleString() }<span class='octicon #{ icon }'>")
+  addDescription: ($repo, description) ->
+    $description = $("<div class='message hublr-description'>")
+    $description.append $("<p>#{ description }</p>")
+    $repo.append $description
+    $repo
 
-  $meta = $("<div class='hublr-meta'>")
-  $meta.append(makeSpan watchers, 'octicon-eye-watch')
-  $meta.append(makeSpan stars, 'octicon-star')
-  $meta.append(makeSpan forks, 'octicon-git-branch-create')
-  $repo.prepend $meta
-  $repo
+  addMeta: ($repo, watchers, stars, forks) ->
+    makeSpan = (n, icon) ->
+      $("<span> #{ n.toLocaleString() }<span class='octicon #{ icon }'>")
 
-hublrfy = ($repo) ->
-  repoURL = $repo.find('.title a:last-child').attr 'href'
-  slug = repoURL.match(/.*\/(\S+\/\S+?)\/?$/)[1]
+    $meta = $("<div class='hublr-meta'>")
+    $meta.append(makeSpan watchers, 'octicon-eye-watch')
+    $meta.append(makeSpan stars, 'octicon-star')
+    $meta.append(makeSpan forks, 'octicon-git-branch-create')
+    $repo.prepend $meta
+    $repo
 
-  cache.get slug, (data) ->
-    if data?.hublr
-      if data.description
-        addDescription $repo, data.description
+  hublrfy: ($repo) ->
+    repoURL = $repo.find('.title a:last-child').attr 'href'
+    slug = repoURL.match(/.*\/(\S+\/\S+?)\/?$/)[1]
 
-      if data.subscribers_count? and data.watchers? and data.forks?
-        addMeta $repo, data.subscribers_count, data.watchers, data.forks
+    @cache.get slug, (data) =>
+      if data?.hublr
+        if data.description
+          @addDescription $repo, data.description
 
-  $repo.addClass 'hublr'
-  $repo
+        if data.subscribers_count? and data.watchers? and data.forks?
+          @addMeta $repo, data.subscribers_count, data.watchers, data.forks
 
-findRepos = ->
-  types = ['fork', 'create', 'watch_started']
-  selectors = (".alert.simple.#{type} .simple:not(.hublr)" for type in types)
-  $(selectors.join ', ')
+    $repo.addClass 'hublr'
+    $repo
 
-cache = new Cache()
+  findRepos: ->
+    types = ['fork', 'create', 'watch_started']
+    selectors = (".alert.simple.#{type} .simple:not(.hublr)" for type in types)
+    $(selectors.join ', ')
 
-bangarang = (retry=0) ->
-  repos = findRepos()
+  bangarang: (retry=0) ->
+    repos = @findRepos()
 
-  if repos.length is 0
-    console.error "Couldn't find any repos. Rebanging..."
-    if retry < 5
-      setTimeout bangarang, 200, retry + 1
-    else
-      setTimeout bangarang, 1000, retry/2
+    if repos.length is 0
+      console.error "Couldn't find any repos. Rebanging..."
+      if retry < 5
+        setTimeout @bangarang, 200, retry + 1
+      else
+        setTimeout @bangarang, 1000, retry/2
 
-    return
+      return
 
-  for repo in findRepos()
-    do (repo) ->
-      hublrfy $(repo)
+    for repo in repos
+      do (repo) => @hublrfy $(repo)
 
-  $('.js-events-pagination').click ->
-    setTimeout bangarang, 250
+    $('.js-events-pagination').click ->
+      setTimeout @bangarang, 250
 
-  repos
+    repos
 
-bangarang()
+hublr = new Hublr()
+hublr.bangarang()
