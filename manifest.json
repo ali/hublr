@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "hublr",
   "description": "A Chrome extension for nerds",
-  "homepage_url": "https://github.com/ali/hublr"
+  "homepage_url": "https://github.com/ali/hublr",
   "version": "0.0.1",
   "author": [
     {
