@@ -6,12 +6,13 @@
   float: right;
   color: #bbb;
   font-size: 12px;
+  line-height: 20px;
 }
 
 .news .hublr-meta span {
-  font-size: 100%;
 }
 
 .news .hublr-meta .octicon {
   margin-left: 2px;
+  font-size: 100%;
 }
