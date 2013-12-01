@@ -12,6 +12,6 @@ clean:
 	rm $(JS)
 
 %.js: %.coffee
-	coffee -c $<
+	coffee -m -c $<
 
 .PHONY : all lint compile clean

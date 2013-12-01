@@ -30,6 +30,10 @@
         ],
       "css": ["hublr.css"]
     }
+  ],
+  "web_accessible_resources": [
+    "hublr.map",
+    "hublr.coffee"
   ]
 }
 
