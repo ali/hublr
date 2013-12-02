@@ -24,6 +24,7 @@
         ],
       "js": [
         "vendor/jquery-1.10.2.min.js",
+        "scroll.js",
         "gthublr.js"
         ],
       "css": ["gthublr.css"]
