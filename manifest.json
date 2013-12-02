@@ -26,7 +26,8 @@
         ],
       "js": [
         "vendor/jquery-1.10.2.min.js",
-        "hublr.js"
+        "hublr.js",
+        "scroll.js"
         ],
       "css": ["hublr.css"]
     }
