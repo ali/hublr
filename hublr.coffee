@@ -42,67 +42,76 @@ class Cache
       slugs = (slug for slug, data of items when Object.keys(data).length < 5)
       @_storage.remove slugs
 
-class Hublr
-  constructor: ->
-    @cache = new Cache()
-    @cache.sweep()
+class Plugin
+  load: -> console.error
 
-  addDescription: ($repo, description) ->
+class NewsFeedPlusPlus extends Plugin
+  constructor: ->
+    @_cache = new Cache()
+
+  _findRepos: ->
+    types = ['fork', 'create', 'watch_started']
+    selectors = (".alert.simple.#{type} .simple:not(.hublr)" for type in types)
+    $.find selectors.join(', ')
+
+  _addDescription: ($repo, description) ->
     $description = $("<div class='message hublr-description'>")
     $description.append $("<p>#{ description }</p>")
     $repo.append $description
     $repo
 
-  addMeta: ($repo, watchers, stars, forks) ->
+  _addMeta: ($repo, watchers, stars, forks) ->
     makeSpan = (n, icon) ->
       $("<span> #{ n.toLocaleString() }<span class='octicon #{ icon }'>")
 
     $meta = $("<div class='hublr-meta'>")
-    $meta.append(makeSpan watchers, 'octicon-eye-watch')
-    $meta.append(makeSpan stars, 'octicon-star')
-    $meta.append(makeSpan forks, 'octicon-git-branch-create')
+    $meta.append makeSpan(watchers, 'octicon-eye-watch'),
+      makeSpan(stars, 'octicon-star'),
+      makeSpan(forks, 'octicon-git-branch-create')
     $repo.prepend $meta
     $repo
 
-  hublrfy: ($repo) ->
+  _hublrize: ($repo) ->
     repoURL = $repo.find('.title a:last-child').attr 'href'
     slug = repoURL.match(/.*\/(\S+\/\S+?)\/?$/)[1]
 
-    @cache.get slug, (data) =>
+    @_cache.get slug, (data) =>
       if data?.hublr
         if data.description
-          @addDescription $repo, data.description
+          @_addDescription $repo, data.description
 
         if data.subscribers_count? and data.watchers? and data.forks?
-          @addMeta $repo, data.subscribers_count, data.watchers, data.forks
+          @_addMeta $repo, data.subscribers_count, data.watchers, data.forks
 
     $repo.addClass 'hublr'
     $repo
 
-  findRepos: ->
-    types = ['fork', 'create', 'watch_started']
-    selectors = (".alert.simple.#{type} .simple:not(.hublr)" for type in types)
-    $(selectors.join ', ')
-
-  bangarang: (retry=0) ->
-    repos = @findRepos()
-
-    if repos.length is 0
-      console.error "Couldn't find any repos. Rebanging..."
-      if retry < 5
-        setTimeout @bangarang, 200, retry + 1
-      else
-        setTimeout @bangarang, 1000, retry/2
-
-      return
-
+  _processRepos: (repos) ->
     for repo in repos
-      do (repo) => @hublrfy $(repo)
+      do (repo) => @_hublrize $(repo)
 
-    $('.js-events-pagination').click ->
-      setTimeout @bangarang, 250
+  load: ->
+    @_processRepos @_findRepos()
 
-    repos
+    observer = new WebKitMutationObserver (mutations) =>
+      # todo: only process added nodes
+      @_processRepos @_findRepos()
 
-hublr = new Hublr()
-hublr.bangarang()
+    observer.observe $('#dashboard .news').get(0), { childList: true }
+
+class Hublr
+  constructor: ->
+    console.log """
+                oooo                     .o8       oooo
+                `888                    "888       `888
+                 888 .oo.   oooo  oooo   888oooo.   888  oooo d8b
+                 888P"Y88b  `888  `888   d88' `88b  888  `888""8P
+                 888   888   888   888   888   888  888   888
+                 888   888   888   888   888   888  888   888
+                o888o o888o  `V88V"V8P'  `Y8bod8P' o888o d888b
+                """
+
+    @plugins = [ new NewsFeedPlusPlus() ]
+    plugin.load() for plugin in @plugins
+
+$ -> new Hublr()
