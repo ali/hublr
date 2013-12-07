@@ -65,9 +65,11 @@ class NewsFeedPlusPlus extends Plugin
       $("<span> #{ n.toLocaleString() }<span class='octicon #{ icon }'>")
 
     $meta = $("<div class='hublr-meta'>")
-    $meta.append makeSpan(watchers, 'octicon-eye-watch'),
-      makeSpan(stars, 'octicon-star'),
+    $meta.append [
+      makeSpan(watchers, 'octicon-eye-watch')
+      makeSpan(stars, 'octicon-star')
       makeSpan(forks, 'octicon-git-branch-create')
+    ]
     $repo.prepend $meta
     $repo
 
@@ -99,6 +101,25 @@ class NewsFeedPlusPlus extends Plugin
 
     observer.observe $('#dashboard .news').get(0), { childList: true }
 
+class InfiniteScroll
+  MORE_BUTTON_SELECTOR = '.js-events-pagination'
+
+  _$moreButton: ->
+    $(MORE_BUTTON_SELECTOR)
+
+  _hideMoreButton: ->
+    @_$moreButton().hide()
+
+  load: ->
+    @_$moreButton().hide()
+
+    $(window).scroll =>
+      verticalPosition = $(window).scrollTop() + $(window).height()
+      scrollThreshold = $(document).height() - 200
+      if verticalPosition > scrollThreshold
+        @_$moreButton().click()
+        @_$moreButton().hide()
+
 class Hublr
   constructor: ->
     console.log """
@@ -111,7 +132,10 @@ class Hublr
                 o888o o888o  `V88V"V8P'  `Y8bod8P' o888o d888b
                 """
 
-    @plugins = [ new NewsFeedPlusPlus() ]
+    @plugins = [
+      new NewsFeedPlusPlus()
+      new InfiniteScroll()
+    ]
     plugin.load() for plugin in @plugins
 
 $ -> new Hublr()
