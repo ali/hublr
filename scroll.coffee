@@ -1,18 +1,21 @@
+# Hide pagination controls
 $('.pagination.ajax_paginate').hide()
 
-copyright = $('.site-footer-links:not(.right)').children().first()
-copyright.addClass('copyright')
+# Grab interesting DOM elements
+$sidebar = $('.dashboard-sidebar')
+$footerItems = $('.site-footer-links li')
+$copyright = $footerItems.find('> :not(a)').parent()
 
-linksLeft = $('.site-footer-links:not(.right)').children().not('.copyright')
-linksRight = $('.site-footer-links.right').children()
-links = new Array(linksLeft, "\n", linksRight)
+# Create our new footer
+$footer = $('<div class="hublr-footer">')
+$footer.append $('<ul class="hublr-footer-links">').append($footerItems)
+$footer.append $('<p>').html($copyright.detach().html())
 
-$('.site-footer-links').children().not('.copyright').css({'display':'inline', 'padding-right':'10px'})
+# Add our footer to the sidebar
+$sidebar.append $footer
 
-$('.dashboard-sidebar').append(copyright, links)
-$('.dashboard-sidebar').children('li').css({'list-style-type':'none'})
-
+# Endless scrolling
 $(window).scroll ->
   if ($(window).scrollTop() + $(window).height()) > ($(document).height() - 400)
-    $('.js-events-pagination')[0].click()
+    $('a.js-events-pagination').click()
     $('.pagination.ajax_paginate').hide()

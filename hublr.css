@@ -13,3 +13,15 @@
   margin-left: 2px;
   font-size: 100%;
 }
+
+.hublr-footer-links li {
+  padding-right: 10px;
+  list-style-type: none;
+  display: inline;
+  float: left;
+}
+
+.hublr-footer p {
+  clear: both;
+  padding: 1em 0;
+}
