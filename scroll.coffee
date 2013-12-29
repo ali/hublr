@@ -17,5 +17,5 @@ $sidebar.append $footer
 # Endless scrolling
 $(window).scroll ->
   if ($(window).scrollTop() + $(window).height()) > ($(document).height() - 400)
-    $('a.js-events-pagination').click()
+    $('.js-events-pagination')[0].click()
     $('.pagination.ajax_paginate').hide()
