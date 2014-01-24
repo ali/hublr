@@ -99,6 +99,30 @@ class NewsFeedPlusPlus extends Plugin
 
     observer.observe $('#dashboard .news').get(0), { childList: true }
 
+class InfiniteScroll extends Plugin
+  load: ->
+    # Hide pagination controls
+    $('.pagination.ajax_paginate').hide()
+
+    # Grab interesting DOM elements
+    $sidebar = $('.dashboard-sidebar')
+    $footerItems = $('.site-footer-links li')
+    $copyright = $footerItems.find('> :not(a)').parent()
+
+    # Create our new footer
+    $footer = $('<div class="hublr-footer">')
+    $footer.append $('<ul class="hublr-footer-links">').append($footerItems)
+    $footer.append $('<p>').html($copyright.detach().html())
+
+    # Add our footer to the sidebar
+    $sidebar.append $footer
+
+    # Watch for scrolling
+    $(window).scroll ->
+      if $(window).scrollTop() + $(window).height() > $(document).height() - 400
+        $('.js-events-pagination')[0].click()
+        $('.pagination.ajax_paginate').hide()
+
 class Hublr
   constructor: ->
     console.log """
@@ -111,7 +135,10 @@ class Hublr
                 o888o o888o  `V88V"V8P'  `Y8bod8P' o888o d888b
                 """
 
-    @plugins = [ new NewsFeedPlusPlus() ]
+    @plugins = [
+      new NewsFeedPlusPlus()
+      new InfiniteScroll()
+    ]
     plugin.load() for plugin in @plugins
 
 $ -> new Hublr()
