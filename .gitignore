@@ -1,6 +1,5 @@
-hublr.js
-hublr.map
-hublr.zip
-hublr.pem
-hublr.crx
-coffeelint.json
+node_modules
+temp
+.tmp
+.sass-cache
+build/
