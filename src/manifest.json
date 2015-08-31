@@ -1,0 +1,32 @@
+{
+    "manifest_version": 2,
+    "name": "Hublr",
+    "description": "More features for your GitHub",
+    "homepage_url": "https://github.com/ali/hublr",
+    "version": "0.0.1",
+    "author": "Ali Ukani <ali.ukani@gmail.com>",
+    "permissions": [
+        "storage",
+        "tabs",
+        "https://github.com/",
+        "http://github.com/"
+    ],
+    "icons": {
+        "128": "icon.png"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "*://github.com/"
+            ],
+            "js": [
+                "hublr.js"
+            ],
+            "css": ["hublr.css"]
+        }
+    ],
+    "options_ui": {
+        "page": "options.html",
+        "chrome_style": true
+    }
+}

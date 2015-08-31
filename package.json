@@ -1,0 +1,36 @@
+{
+  "name": "hublr",
+  "version": "0.0.1",
+  "description": "A Chrome extension for nerds",
+  "private": "true",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {
+    "gulp": "^3.9.0",
+    "jest-cli": "^0.5.0",
+    "react-redux": "^1.0.1",
+    "redux": "^1.0.1",
+    "redux-devtools": "^1.1.2",
+    "redux-form": "^0.6.1"
+  },
+  "devDependencies": {
+    "eslint": "^1.3.1",
+    "gulp": "^3.9.0",
+    "jest-cli": "^0.5.0",
+    "webpack": "^1.12.0"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ali/hublr.git"
+  },
+  "author": "Ali Ukani <ali.ukani@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ali/hublr/issues"
+  },
+  "homepage": "https://github.com/ali/hublr#readme"
+}
